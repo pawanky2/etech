@@ -1,0 +1,205 @@
+<div class="card">
+    <p-dataView #dv [value]="products"  [rows]="9" 
+         layout="grid">
+        <ng-template pTemplate="header">
+            <div class="p-d-flex p-flex-column p-flex-md-row p-jc-md-between">
+                <label for="">Product List</label>
+            </div>
+        </ng-template>
+        
+        <ng-template let-product pTemplate="gridItem">
+            <div class="p-col-12 p-md-4">
+                <div class="product-grid-item card">
+                    <div class="product-grid-item-top">
+                        <div>
+                            <img src="images/uploads/image-1616363432112.jpg"alt="">
+                        </div>
+
+                    </div>
+                    <div class="product-grid-item-content">
+                        <div class="product-name">{{product.itemname}}</div>
+                        
+                    </div>
+                    <hr>
+                    <div class="product-grid-item-bottom">
+
+                        <div class="p-grid">
+                            <div class="p-col"><span class="product-price">${{product.price}}</span></div>
+                            <div class="p-col"><p-button (click) ="addItem(product)">Add to Cart</p-button></div>
+
+                        </div>
+                        
+                        
+                    </div>
+                </div>
+            </div>
+        </ng-template>
+    </p-dataView>
+
+    <hr>
+    cart section 
+    <hr>
+
+    <p-table #dt [value]="selectedItem" [rows]="10" 
+    [rowHover]="true" dataKey="id"
+    [showCurrentPageReport]="true">
+   
+   <ng-template pTemplate="header">
+       <tr>
+           
+           <th pSortableColumn="name">Name <p-sortIcon field="name"></p-sortIcon></th>
+           <th>Image</th>
+           <th pSortableColumn="price">Price <p-sortIcon field="price"></p-sortIcon></th>
+           <th> Quantity</th>
+           <th>Sub total</th>
+           <th></th>
+       </tr>
+   </ng-template>
+   <ng-template pTemplate="body" let-product>
+       <tr>
+           
+           <td>{{product.itemname}}</td>
+           <td><img [src]= "product.imageurl" [alt]="product.name" width="100" class="p-shadow-4" /></td>
+           <td>{{product.price | currency:'USD'}}</td>
+           <td></td>
+           <td></td>
+           
+           
+           
+           <td>
+               <!-- <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success p-mr-2" (click)="editProduct(product)"></button> -->
+               <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning" (click)="deleteProduct(product)"> </button>
+           </td>
+       </tr>
+   </ng-template>
+
+   
+
+   
+</p-table>
+
+
+
+
+<hr>
+Admin section 
+<hr>
+    <p-toast position="top-center"></p-toast>
+    <p-tabView (onChange)="handleChange($event)">
+        <p-tabPanel header="Product Add">
+
+            <div class="card">
+
+                <div class="p-field">
+                    <label for="name">Product Name     </label>
+                    <input type="text" pInputText id="name" [(ngModel)]="product.itemname"  /> <br>
+                    
+                </div>
+                <div class="p-field">
+                    <label for="name">Product Price</label>
+                    <input type="text" pInputText id="price" [(ngModel)]="product.price"  />
+                </div>
+                <div class="p-formgroup-inline">
+
+                    <div class="p-field">
+                        <label for="name">Image</label>
+                    </div>
+
+                    <div class="p-field">
+                        <!-- <p-fileUpload name="image" url="http://localhost:5000/upload" 
+                        accept="image/*"  (uploadHandler)="myUploader($event)" (onUpload) = "fn($event)"></p-fileUpload> -->
+                        
+                        <input type="text" pInputText id="name" [(ngModel)]="product.imgurl"  />
+
+                    </div>
+                    <div class="p-field">
+                        <p-fileUpload mode="basic" name="image" url="http://localhost:5000/upload" (uploadHandler)="myUploader($event)"   (onUpload)="fn($event)" [auto]="true"></p-fileUpload>
+                    </div>
+    
+                </div>
+
+                <div class="p-field">
+                    <button pButton label="Save" icon="pi pi-check" class="p-button-text" (click)="saveProduct()"></button>
+                </div>
+
+            </div>
+            
+
+            
+        </p-tabPanel>
+        <p-tabPanel header="Product List">
+            
+
+            <p-table #dt [value]="products" [rows]="10" 
+         [rowHover]="true" dataKey="id"
+         [showCurrentPageReport]="true">
+        
+        <ng-template pTemplate="header">
+            <tr>
+                
+                <th pSortableColumn="name">Name <p-sortIcon field="name"></p-sortIcon></th>
+                <th>Image</th>
+                <th pSortableColumn="price">Price <p-sortIcon field="price"></p-sortIcon></th>
+                <th></th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-product>
+            <tr>
+                
+                <td>{{product.itemname}}</td>
+                <td><img [src]= "product.imageurl" [alt]="product.name" width="100" class="p-shadow-4" /></td>
+                <td>{{product.price | currency:'USD'}}</td>
+                
+                
+                
+                <td>
+                    <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success p-mr-2" (click)="editProduct(product)"></button>
+                    <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning" (click)="deleteProduct(product)"></button>
+                </td>
+            </tr>
+        </ng-template>
+
+        
+
+        
+    </p-table>
+
+    <p-dialog [(visible)]="productDialog" [style]="{width: '450px'}" header="Edit Product Details" [modal]="true" styleClass="p-fluid">
+        <ng-template pTemplate="content">
+            <div class="p-field">
+                <label for="name">Name</label>
+                <input type="text" pInputText id="name" [(ngModel)]="product.itemname" required autofocus />
+                <small class="p-invalid" *ngIf="submitted && !product.itemname">Name is required.</small>
+            </div>
+            <div class="p-field">
+                <label for="description">Image</label>
+                <!-- <textarea id="description" pInputTextarea [(ngModel)]="product.description" required rows="3" cols="20"></textarea> -->
+                <input type="text" pInputText id="name" [(ngModel)]="product.imgurl"  />
+                <p-fileUpload mode="basic" name="image" url="http://localhost:5000/upload" (uploadHandler)="myUploader($event)"   (onUpload)="fn($event)" [auto]="true"></p-fileUpload>
+            </div>
+    
+           
+    
+            <div class="p-formgrid p-grid">
+                <div class="p-field p-col">
+                    <label for="price">Price</label>
+                    <p-inputNumber id="price" [(ngModel)]="product.price" mode="currency" currency="USD" locale="en-US"></p-inputNumber>
+                </div>
+                
+            </div>
+        </ng-template>
+        
+        <ng-template pTemplate="footer">
+            <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+            <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" (click)="saveProduct()"></button>
+        </ng-template>
+    </p-dialog>
+
+    <p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog>
+
+
+        </p-tabPanel>
+        
+    </p-tabView>
+
+    
