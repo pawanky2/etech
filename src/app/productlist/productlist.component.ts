@@ -34,7 +34,8 @@ export class ProductlistComponent implements OnInit {
     
 
     this.productService.getProducts().subscribe((data)=>{this.products = data;
-    console.log(this.products)});
+    
+      console.log(this.products)});
     
   }
 
@@ -105,6 +106,10 @@ saveProduct(){
             if (this.product.id) {
                 this.products[this.findIndexById(this.product.id)] = this.product;                
                 this.messageService.add({severity:'success', summary: 'Successful', detail: 'Product Updated', life: 3000});
+            }
+
+            else if(this.products.some(ele => ele.itemname === this.product.itemname)){
+                this.messageService.add({severity:'warn' , summary :'Warning' , detail:"Product already exists!"})
             }
             else {
                 this.product.id = this.createId();
