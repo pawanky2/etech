@@ -61,11 +61,11 @@ export class ProductlistComponent implements OnInit {
     this.productDialog = true;
   }
   deleteProduct(product : Product){
-    alert("Product deleted");
+    // alert("Product deleted");
 
-    this.products = this.products.filter(val => val.id !== product.id);
-          this.product = {};
-          console.log('deleted', this.products);
+    // this.products = this.products.filter(val => val.id !== product.id);
+    //       this.product = {};
+    //       console.log('deleted', this.products);
 
     this.confirmationService.confirm({
       message: 'Are you sure you want to delete ' + product.itemname + '?',
@@ -73,6 +73,8 @@ export class ProductlistComponent implements OnInit {
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
           this.products = this.products.filter(val => val.id !== product.id);
+          this.productService.delProduct(product).subscribe();
+          
           this.product = {};
           console.log('deleted', this.products);
           this.messageService.add({severity:'success', summary: 'Successful', detail: 'Product Deleted', life: 3000});

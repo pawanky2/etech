@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Product } from 'src/model/product.model';
 import {Observable} from 'rxjs';
 
@@ -34,6 +34,18 @@ onupload( selectedfile : any):Observable<any>{
 addProduct(product:Product):Observable<any>{
  let url = "http://localhost:5000/product";
  return this.http.post<any>(url,product);
+}
+
+delProduct(product:any): Observable<any>{
+
+  const options = {
+    headers: new HttpHeaders({
+      'Content-Type': 'application/json',
+    }),
+    body: product,
+  };
+  let url = "http://localhost:5000/product";
+  return this.http.delete<any>(url ,options);
 }
 
 }
