@@ -61,17 +61,23 @@
            <td>{{product.itemname}}</td>
            <td><img [src]= "product.imageurl" [alt]="product.name" width="100" class="p-shadow-4" /></td>
            <td>{{product.price | currency:'USD'}}</td>
-           <td></td>
-           <td></td>
+           <td>{{product.qutantity}}</td>
+           <td>{{product.subtotal}}</td>
            
            
            
            <td>
                <!-- <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success p-mr-2" (click)="editProduct(product)"></button> -->
-               <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning" (click)="deleteProduct(product)"> </button>
+               <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning" (click)="removeitem(product)"> </button>
            </td>
        </tr>
+       <!-- <tr><td colspan="4"></td><td>Total : {{total}}</td></tr> -->
    </ng-template>
+   <ng-template pTemplate="footer">
+    
+    
+    <tr><td colspan="4"></td><td>Total : {{total}}</td></tr>
+</ng-template>
 
    
 

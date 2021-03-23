@@ -4,6 +4,7 @@ import {ProductService} from '../../services/product.service';
 import { ConfirmationService } from 'primeng/api';
 import { MessageService } from 'primeng/api';
 import {Item} from '../../model/item.model';
+import { conditionallyCreateMapObjectLiteral } from '@angular/compiler/src/render3/view/util';
 @Component({
   selector: 'app-productlist',
   templateUrl: './productlist.component.html',
@@ -16,8 +17,10 @@ export class ProductlistComponent implements OnInit {
   submitted: boolean= false;
   productDialog: boolean= false;
 
-  item :Item ={}
+  item :Item ={};
+  
   selectedItem : Item[] =[];
+  total:any = 0;
 
   selectedFile : any = null;
   onFileSelected(event:any){
@@ -145,20 +148,52 @@ hideDialog(){
 }
 
 addItem(item:any){
-console.log("item",item);
-this.selectedItem.push(item);
 
-this.selectedItem.forEach(value =>{ console.log('value',value)
+  let productExistInCart :any = {};
+   productExistInCart = this.selectedItem.find((obj) => obj.itemname === item.itemname);
 
-if(value.id ===item.id){
-  // item.qutantity =  parseInt(item.qutantity) + parseInt(value.qutantity) ;
+  console.log(productExistInCart);
+
+  
+
+    if (!productExistInCart) {
+      this.selectedItem.push({...item, qutantity:1 , subtotal:item.price}); // enhance "porduct" opject with "num" property
+      
+    }else{
+
+      productExistInCart.qutantity +=1;
+      productExistInCart.subtotal = productExistInCart.qutantity * item.price;
+
+      
+    }
+    // console.log(this.selectedItem);
+
+    this.caltotal()
+    console.log(this.total);
+  
+    
+
+  // this.selectedItem.push(item);
+
+ 
+
+  
+
+
 }
-console.log(value.id);
-});
+caltotal(){
+    let sum =0;
+    // this.selectedItem.forEach((obj:any) => sum += obj.subtotal);
+    // console.log(sum);
+    this.selectedItem.forEach((obj:any) => sum += parseInt(obj.subtotal));
+    this.total =sum;
+
+      
+}
 
 
-
-
+removeitem(item:any){
+  this.selectedItem = this.selectedItem.filter(({itemname}) => itemname !== item.itemname)
 }
 
 }
